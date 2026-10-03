@@ -1,6 +1,6 @@
 """
-Script para generar el PDF elegante de la Guía de Demostración y Oratoria
-Optimizado para un diseño impecable de 3 páginas completas sin desbordes.
+Script para generar el PDF de la Guía de Demostración y Oratoria
+Con la tabla comparativa completa de 11 criterios y diseño contrastado de alta legibilidad.
 """
 import os
 import subprocess
@@ -12,19 +12,19 @@ html_content = """<!DOCTYPE html>
     <meta charset="UTF-8">
     <title>Guía Maestra de Demostración y Oratoria - LG14</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Fira+Code:wght@400;500;600&display=swap');
 
         @page {
             size: A4;
-            margin: 12mm 14mm 12mm 14mm;
+            margin: 10mm 12mm 10mm 12mm;
         }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            color: #1e293b;
+            color: #0f172a;
             background-color: #ffffff;
-            line-height: 1.45;
-            font-size: 11.5px;
+            line-height: 1.4;
+            font-size: 11px;
             margin: 0;
             padding: 0;
         }
@@ -32,63 +32,57 @@ html_content = """<!DOCTYPE html>
         .header-box {
             background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
             color: #ffffff;
-            padding: 16px 20px;
-            border-radius: 10px;
-            margin-bottom: 14px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 10px;
         }
 
         .header-box h1 {
             margin: 0 0 4px 0;
-            font-size: 19px;
+            font-size: 18px;
             font-weight: 800;
-            letter-spacing: -0.5px;
         }
 
         .header-box .meta {
-            font-size: 11px;
+            font-size: 10.5px;
             opacity: 0.95;
-            line-height: 1.5;
+            line-height: 1.4;
         }
 
         .badge-pill {
             display: inline-block;
-            background: rgba(255, 255, 255, 0.22);
-            padding: 2px 10px;
-            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.25);
+            padding: 2px 8px;
+            border-radius: 15px;
             font-weight: 600;
-            font-size: 10px;
-            margin-top: 5px;
-            letter-spacing: 0.2px;
+            font-size: 9.5px;
+            margin-top: 4px;
         }
 
         h2 {
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 700;
             color: #0f172a;
             border-bottom: 2px solid #e2e8f0;
-            padding-bottom: 4px;
-            margin-top: 14px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+            padding-bottom: 3px;
+            margin-top: 10px;
+            margin-bottom: 8px;
         }
 
         .card {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            padding: 10px 14px;
-            margin-bottom: 10px;
+            background: #ffffff;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
             page-break-inside: avoid;
         }
 
         .card-title {
             font-weight: 700;
-            font-size: 12.5px;
+            font-size: 12px;
             color: #1e3a8a;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -97,32 +91,32 @@ html_content = """<!DOCTYPE html>
         .tag-time {
             background: #dbeafe;
             color: #1e40af;
-            font-size: 10px;
+            font-size: 9.5px;
             font-weight: 700;
-            padding: 2px 7px;
-            border-radius: 5px;
+            padding: 1px 6px;
+            border-radius: 4px;
         }
 
         blockquote {
-            margin: 6px 0;
-            padding: 8px 12px;
-            background: #eff6ff;
-            border-left: 3.5px solid #3b82f6;
-            color: #1e293b;
+            margin: 5px 0;
+            padding: 6px 10px;
+            background: #f0f9ff;
+            border-left: 3px solid #0284c7;
+            color: #0c4a6e;
             font-style: italic;
-            border-radius: 0 6px 6px 0;
-            font-size: 11px;
-            line-height: 1.45;
+            border-radius: 0 4px 4px 0;
+            font-size: 10.5px;
+            line-height: 1.35;
         }
 
         .point-highlight {
             background: #fefce8;
             border: 1px solid #fef08a;
-            padding: 6px 10px;
-            border-radius: 6px;
+            padding: 4px 8px;
+            border-radius: 4px;
             color: #854d0e;
-            font-size: 10.5px;
-            margin-top: 6px;
+            font-size: 10px;
+            margin-top: 4px;
             font-weight: 500;
         }
 
@@ -131,82 +125,87 @@ html_content = """<!DOCTYPE html>
         }
 
         code {
-            background: #e2e8f0;
+            background: #f1f5f9;
             color: #0f172a;
-            padding: 1px 4px;
+            padding: 1px 3px;
             border-radius: 3px;
-            font-size: 10.5px;
+            font-size: 10px;
         }
 
         pre {
             background: #0f172a;
             color: #f8fafc;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 10.5px;
-            margin: 6px 0;
-            line-height: 1.35;
+            padding: 6px 10px;
+            border-radius: 4px;
+            font-size: 10px;
+            margin: 4px 0;
+            line-height: 1.3;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 10.5px;
-            margin: 8px 0;
+            font-size: 9.5px;
+            margin: 6px 0;
             page-break-inside: avoid;
         }
 
         th, td {
-            padding: 6px 8px;
+            padding: 4.5px 7px;
             text-align: left;
-            border: 1px solid #cbd5e1;
+            border: 1px solid #94a3b8;
+            color: #0f172a;
         }
 
         th {
             background: #1e293b;
-            color: #ffffff;
-            font-weight: 600;
+            color: #ffffff !important;
+            font-weight: 700;
         }
 
         tr:nth-child(even) {
             background: #f8fafc;
         }
 
+        tr:nth-child(odd) {
+            background: #ffffff;
+        }
+
         .faq-box {
-            background: #fdf4ff;
-            border: 1px solid #f5d0fe;
-            border-left: 3.5px solid #c026d3;
-            padding: 8px 12px;
-            border-radius: 0 6px 6px 0;
-            margin-bottom: 8px;
+            background: #faf5ff;
+            border: 1px solid #e9d5ff;
+            border-left: 3.5px solid #a855f7;
+            padding: 6px 10px;
+            border-radius: 0 4px 4px 0;
+            margin-bottom: 6px;
             page-break-inside: avoid;
         }
 
         .faq-q {
             font-weight: 700;
-            color: #86198f;
-            margin-bottom: 3px;
-            font-size: 11.5px;
+            color: #6b21a8;
+            margin-bottom: 2px;
+            font-size: 10.5px;
         }
 
         .faq-a {
             color: #334155;
-            font-size: 11px;
-            line-height: 1.4;
+            font-size: 10px;
+            line-height: 1.35;
         }
 
         .checklist {
             list-style: none;
             padding-left: 0;
-            margin: 6px 0;
+            margin: 4px 0;
         }
 
         .checklist li {
-            padding: 3px 0;
+            padding: 2px 0;
             display: flex;
             align-items: center;
-            gap: 8px;
-            font-size: 11.5px;
+            gap: 6px;
+            font-size: 10.5px;
         }
 
         .page-break {
@@ -254,7 +253,7 @@ html_content = """<!DOCTYPE html>
             <tr>
                 <td><strong>4. Comparativa con Hadoop</strong></td>
                 <td>2 min</td>
-                <td>Defender ventajas de Spark en memoria vs MapReduce en disco.</td>
+                <td>Defender la tabla de 11 criterios: Spark en memoria vs MapReduce en disco.</td>
             </tr>
             <tr>
                 <td><strong>5. Conclusiones y Cierre</strong></td>
@@ -271,9 +270,9 @@ html_content = """<!DOCTYPE html>
             <span>FASE 1: Introducción y Selección del Repositorio</span>
             <span class="tag-time">1 Minuto</span>
         </div>
-        <p style="margin: 3px 0;"><strong>🖥️ Acción en pantalla:</strong> Mostrar portada del <code>README.md</code> (Sección 1 y 2).</p>
+        <p style="margin: 2px 0;"><strong>🖥️ Acción en pantalla:</strong> Mostrar portada del <code>README.md</code> (Sección 1 y 2).</p>
         <blockquote>
-            "Buenas tardes, docente y compañeros. Para la práctica LG14 seleccionamos el repositorio público <strong>spark-standalone-cluster-on-docker</strong> de André Perez, un proyecto open-source activamente mantenido con más de 500 estrellas.<br><br>
+            "Buenas tardes, docente y compañeros. Para la práctica LG14 seleccionamos el repositorio público <strong>spark-standalone-cluster-on-docker</strong> de André Perez, un proyecto open-source activamente mantenido con más de 500 estrellas.<br>
             Seleccionamos <strong>Apache Spark 3.5.7</strong> en lugar del esquema tradicional de Hadoop porque representa el estado del arte en Big Data moderno: procesamiento distribuido en memoria RAM, lo que permite consultas hasta 100 veces más rápidas que MapReduce y soporte analítico directo en Python mediante PySpark y JupyterLab."
         </blockquote>
         <div class="point-highlight">
@@ -286,7 +285,7 @@ html_content = """<!DOCTYPE html>
             <span>FASE 2: Comprensión y Análisis de la Arquitectura</span>
             <span class="tag-time">2 Minutos</span>
         </div>
-        <p style="margin: 3px 0;"><strong>🖥️ Acción en pantalla:</strong> Mostrar el Diagrama Mermaid de Arquitectura en el <code>README.md</code> (Sección 4.3).</p>
+        <p style="margin: 2px 0;"><strong>🖥️ Acción en pantalla:</strong> Mostrar el Diagrama Mermaid de Arquitectura en el <code>README.md</code> (Sección 4.3).</p>
         <blockquote>
             "Analizando la arquitectura técnica, nuestro entorno está compuesto por <strong>4 contenedores Docker</strong> orquestados en una red Bridge privada:<br>
             1. <strong>spark-master</strong>: Nodo coordinador. Expone el puerto <code>7077</code> para RPC interno y su Web UI en el puerto <code>8085</code> para monitoreo.<br>
@@ -308,19 +307,19 @@ html_content = """<!DOCTYPE html>
             <span class="tag-time">4 Minutos</span>
         </div>
 
-        <p style="margin: 4px 0;"><strong>1. Estado de los Contenedores en Terminal:</strong></p>
+        <p style="margin: 3px 0;"><strong>1. Estado de los Contenedores en Terminal:</strong></p>
         <pre><code>docker ps</code></pre>
         <blockquote>"Podemos observar que los 4 contenedores están en estado <strong>Up</strong>, con sus puertos correctamente mapeados y saludables."</blockquote>
 
-        <p style="margin: 4px 0;"><strong>2. Monitoreo en la Web UI de Spark Master:</strong></p>
-        <p style="margin: 2px 0;">Abrir en el navegador: <code>http://localhost:8085</code></p>
+        <p style="margin: 3px 0;"><strong>2. Monitoreo en la Web UI de Spark Master:</strong></p>
+        <p style="margin: 1px 0;">Abrir en el navegador: <code>http://localhost:8085</code></p>
         <blockquote>"Al ingresar a la interfaz del Master, confirmamos el estado <strong>ALIVE</strong> y la métrica fundamental de Big Data: <strong>Alive Workers = 2</strong>, con 2 Cores y 2 GB de memoria totales listos para cómputo."</blockquote>
 
-        <p style="margin: 4px 0;"><strong>3. Ejecución del Circuito de Pruebas Distribuidas:</strong></p>
+        <p style="margin: 3px 0;"><strong>3. Ejecución del Circuito de Pruebas Distribuidas:</strong></p>
         <pre><code>python scripts/run_all_tests.py</code></pre>
         
-        <p style="margin: 4px 0;"><strong>Explicación de cada prueba durante la ejecución en vivo:</strong></p>
-        <ul style="margin: 4px 0; padding-left: 18px;">
+        <p style="margin: 3px 0;"><strong>Explicación de cada prueba durante la ejecución en vivo:</strong></p>
+        <ul style="margin: 2px 0; padding-left: 16px;">
             <li><strong>Prueba 1 (SparkPi - Monte Carlo):</strong> <em>"Dividió el cálculo de Pi en 10 particiones asignadas en paralelo a los dos workers (<code>172.21.0.3</code> y <code>172.21.0.4</code>), imprimiendo <code>Pi is roughly 3.14...</code> y demostrando paralelismo de CPU real."</em></li>
             <li><strong>Prueba 2 (PySpark DataFrames):</strong> <em>"Ejecuta <code>test_pyspark.py</code> aplicando transformaciones en memoria y filtrado distribuido sobre 5 registros en menos de 10 segundos."</em></li>
             <li><strong>Prueba 3 (Spark SQL y Agregaciones):</strong> <em>"Ejecuta <code>test_spark_sql.py</code> con consultas SQL nativas y agregaciones <code>groupBy</code> de telemetría de CPU y memoria sobre datos particionados."</em></li>
@@ -329,43 +328,73 @@ html_content = """<!DOCTYPE html>
 
     <div class="card">
         <div class="card-title">
-            <span>FASE 4: Análisis Comparativo con docker-hadoop</span>
+            <span>FASE 4: Análisis Comparativo Completo con docker-hadoop (11 Criterios)</span>
             <span class="tag-time">2 Minutos</span>
         </div>
-        <p style="margin: 3px 0;"><strong>🖥️ Acción en pantalla:</strong> Mostrar la Tabla Comparativa en el <code>README.md</code> (Sección 8).</p>
+        <p style="margin: 2px 0;"><strong>🖥️ Acción en pantalla:</strong> Mostrar la Tabla Comparativa Completa:</p>
         <table>
             <thead>
                 <tr>
-                    <th>Característica</th>
-                    <th>docker-hadoop (Referencia)</th>
-                    <th>spark-standalone-cluster (Nuestro)</th>
+                    <th style="width: 22%;">Criterio Oficial</th>
+                    <th style="width: 39%;">docker-hadoop (Referencia Univalle)</th>
+                    <th style="width: 39%;">spark-standalone-cluster (Nuestro Proyecto)</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><strong>Tecnología Principal</strong></td>
-                    <td>Apache Hadoop (HDFS + MapReduce)</td>
+                    <td><strong>1. Tecnología Principal</strong></td>
+                    <td>Apache Hadoop (HDFS + MapReduce / YARN)</td>
                     <td><strong>Apache Spark (v3.5.7)</strong></td>
                 </tr>
                 <tr>
-                    <td><strong>Paradigma de Cómputo</strong></td>
-                    <td>En Disco (I/O intensivo en cada etapa)</td>
-                    <td><strong>En Memoria RAM (hasta 100x más veloz)</strong></td>
+                    <td><strong>2. Docker</strong></td>
+                    <td>Sí (Imágenes Debian/Alpine)</td>
+                    <td><strong>Sí (Debian con SapMachine Java 21)</strong></td>
                 </tr>
                 <tr>
-                    <td><strong>Contenedores</strong></td>
+                    <td><strong>3. Docker Compose</strong></td>
+                    <td>Sí (Versión 2.x/3.x)</td>
+                    <td><strong>Sí (Orquestación con named volumes)</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>4. Contenedores</strong></td>
                     <td>5 (Namenode, Datanode, Resourcemanager, etc.)</td>
-                    <td><strong>4 (Master, 2 Workers, JupyterLab)</strong></td>
+                    <td><strong>4 (Spark Master, Worker 1, Worker 2, JupyterLab)</strong></td>
                 </tr>
                 <tr>
-                    <td><strong>Entorno Analítico</strong></td>
-                    <td>Compilación manual de Jars Java</td>
-                    <td><strong>JupyterLab interactivo (PySpark/Scala/R)</strong></td>
+                    <td><strong>5. Almacenamiento</strong></td>
+                    <td>HDFS con replicación por bloques</td>
+                    <td><strong>Volumen compartido <code>shared-workspace</code> (/opt/workspace)</strong></td>
                 </tr>
                 <tr>
-                    <td><strong>Caso de Uso</strong></td>
+                    <td><strong>6. Procesamiento</strong></td>
+                    <td>MapReduce por lotes (I/O intensivo en disco)</td>
+                    <td><strong>En Memoria RAM (RDDs / DataFrames, hasta 100x más rápido)</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>7. Interfaces Web</strong></td>
+                    <td>NameNode (`9870`), YARN (`8088`), History (`8188`)</td>
+                    <td><strong>Spark Master (`8085`), Workers (`8081/8082`), Jupyter (`8888`)</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>8. Persistencia</strong></td>
+                    <td>Volúmenes dedicados NameNode/DataNodes</td>
+                    <td><strong>Docker Named Volume persistente <code>hadoop-distributed-file-system</code></strong></td>
+                </tr>
+                <tr>
+                    <td><strong>9. Complejidad Inst.</strong></td>
+                    <td>Media-Alta (formateo HDFS y sincronización YARN)</td>
+                    <td><strong>Baja-Media (despliegue ágil y escalado directo de workers)</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>10. Documentación</strong></td>
+                    <td>Enfocada en infraestructura básica de clúster</td>
+                    <td><strong>Enfocada en ciencia de datos interactiva (Python, Scala, R)</strong></td>
+                </tr>
+                <tr>
+                    <td><strong>11. Caso de Uso</strong></td>
                     <td>Batch histórico y almacenamiento masivo</td>
-                    <td><strong>Analítica interactiva, ML y streaming</strong></td>
+                    <td><strong>Analítica en tiempo real, streaming, SQL y Machine Learning</strong></td>
                 </tr>
             </tbody>
         </table>
@@ -428,7 +457,7 @@ edge_paths = [
     r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
     r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
     r"C:\Program Files\Google\Chrome\Application\chrome.exe",
-    r"C:\Program Files (x86)\Google\Chrome\Application\chrome.exe"
+    r"C:\Program Files\Google\Chrome\Application\chrome.exe"
 ]
 
 browser_exe = None
@@ -453,7 +482,7 @@ cmd = [
 subprocess.run(cmd, capture_output=True, text=True)
 
 if os.path.exists(pdf_output) and os.path.getsize(pdf_output) > 0:
-    print(f"[OK] PDF optimizado generado exitosamente: {pdf_output}")
+    print(f"[OK] PDF actualizado con tabla completa de 11 criterios: {pdf_output}")
     try:
         os.remove(temp_html)
     except Exception:

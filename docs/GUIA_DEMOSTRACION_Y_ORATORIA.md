@@ -103,13 +103,27 @@ python scripts/run_all_tests.py
 ---
 
 ### FASE 4: Análisis Comparativo con `docker-hadoop` (2 Minutos)
-> **Objetivo del PDF:** Cumplir Sección 8 y 9. Demostrar capacidad de análisis crítico de tecnologías.
+> **Objetivo del PDF:** Cumplir Sección 8 y 9. Demostrar capacidad de análisis crítico comparativo.
 
 #### 🖥️ ¿Qué mostrar en pantalla?
-* La Tabla Comparativa en [README.md](file:///c:/Users/wiget/OneDrive/Desktop/bigdata-grupo-4/README.md) (Sección 8).
+* La **Tabla Comparativa Completa** (11 Criterios de la Guía Oficial):
+
+| Característica / Criterio | `docker-hadoop` (Referencia Univalle) | `spark-standalone-cluster-on-docker` (Nuestro Proyecto) |
+| :--- | :--- | :--- |
+| **1. Tecnología Principal** | Apache Hadoop (HDFS + MapReduce / YARN) | **Apache Spark (v3.5.7)** |
+| **2. Docker** | Sí (Contenedores oficiales Debian/Alpine) | **Sí (Contenedores Debian con SapMachine Java 21)** |
+| **3. Docker Compose** | Sí (Versión 2.x/3.x) | **Sí (Orquestación declarativa con named volumes)** |
+| **4. Número de Contenedores** | 5 (Namenode, Datanode, Resourcemanager, Nodemanager, Historyserver) | **4 (Spark Master, Spark Worker 1, Spark Worker 2, JupyterLab)** |
+| **5. Almacenamiento Distribuido** | HDFS nativo con replicación de bloques en DataNodes | **Volumen local montado (`shared-workspace`), extensible a HDFS/S3** |
+| **6. Procesamiento Distribuido** | MapReduce por lotes (I/O intensivo con lectura/escritura en disco) | **Spark Core / RDDs / DataFrames (En memoria RAM, hasta 100x más rápido)** |
+| **7. Interfaces Web** | NameNode UI (`9870`), YARN UI (`8088`), History (`8188`) | **Spark Master UI (`8085`), Worker UIs (`8081/8082`), JupyterLab (`8888`)** |
+| **8. Persistencia** | Volúmenes dedicados para metadata y bloques HDFS | **Volumen Docker compartido montado en `/opt/workspace`** |
+| **9. Complejidad de Instalación** | Media-Alta (dependencias de formateo HDFS y sincronización YARN) | **Baja-Media (despliegue ágil y escalado directo de workers)** |
+| **10. Documentación** | Enfocada en infraestructura básica de clúster Hadoop | **Enfocada en desarrollo interactivo y ciencia de datos (Python, Scala, R)** |
+| **11. Caso de Uso** | Almacenamiento masivo y procesamiento batch histórico en frío | **Analítica en tiempo real, streaming, SQL interactivo y Machine Learning** |
 
 #### 🗣️ ¿Qué decir? (Guion sugerido):
-> *"Comparando nuestra solución con el repositorio base de la materia (`docker-hadoop` de Big Data Europe):*
+> *"Comparando nuestra solución con el repositorio base de la materia (`docker-hadoop` de Big Data Europe) bajo los 11 criterios oficiales:*
 >
 > * **1. Modelo de Cómputo:** Hadoop usa **MapReduce**, el cual escribe en disco en cada etapa intermedia, generando un cuello de botella en I/O. Spark opera **completamente en memoria RAM**, logrando un procesamiento hasta 100 veces más rápido.*
 > * **2. Usabilidad y Desarrollo:** Hadoop requiere compilar Jars monolíticos en Java. Nuestro despliegue de Spark integra **JupyterLab interactivo**, permitiendo analítica ágil en Python/PySpark.*
