@@ -236,7 +236,90 @@ Total de registros procesados en el clúster: 5
 
 ---
 
-## 7. Comparación con `docker-hadoop` (Big Data Europe)
+---
+
+## 7. Circuito de Pruebas: Ejecución Automatizada y Manual
+
+Para facilitar la demostración, validación y defensa del proyecto, se ha implementado una suite completa que puede ejecutarse tanto de forma **100% automatizada** (con reporte consolidado) como de forma **manual e interactiva paso a paso**.
+
+### 7.1 Modo Automatizado (1 Solo Comando)
+
+Puedes ejecutar el circuito completo de pruebas desde cualquier terminal o mediante doble clic:
+
+* **Con Python (Recomendado - Multiplataforma):**
+  ```bash
+  python scripts/run_all_tests.py
+  ```
+* **En Windows PowerShell:**
+  ```powershell
+  .\scripts\run_tests.ps1
+  ```
+* **En Linux / macOS / Git Bash:**
+  ```bash
+  bash scripts/run_tests.sh
+  ```
+* **En Windows CMD (o Doble Clic):**
+  ```cmd
+  scripts\run_tests.bat
+  ```
+
+#### Salida del Reporte Consolidado Automatizado:
+```text
+===========================================================================
+                       REPORTE CONSOLIDADO DE PRUEBAS                    
+===========================================================================
+
+PRUEBA / VALIDACION                    ESTADO       DURACION   DETALLE
+-------------------------------------------------------------------------------------
+Salud del Cluster (4 Contenedores)     [ PASSED ]   0.07s      spark-master, workers 1/2 y jupyterlab activos
+Conectividad Web UIs                   [ PASSED ]   -          Master en http://localhost:8085 | Jupyter en http://localhost:8888
+Prueba 1: SparkPi (Distribuido)        [ PASSED ]   4.41s      Pi is roughly 3.141075141075141
+Prueba 2: PySpark DataFrames           [ PASSED ]   9.02s      5 registros procesados y filtrados
+Prueba 3: Spark SQL & Agregaciones     [ PASSED ]   9.57s      Consultas SQL y groupBy distribuidos OK
+-------------------------------------------------------------------------------------
+
+RESULTADO GLOBAL: TODAS LAS PRUEBAS PASARON EXITOSAMENTE! (100% OK)
+El cluster Spark distribuido se encuentra 100% operativo y validado.
+```
+
+---
+
+### 7.2 Modo Manual (Paso a Paso)
+
+Si se desea realizar la demostración interactiva ejecutando cada prueba individualmente:
+
+#### Paso A: Verificación de Contenedores y Web UIs
+```bash
+docker ps
+```
+* **Spark Master UI:** [http://localhost:8085](http://localhost:8085) *(Verificar 2 Alive Workers)*
+* **JupyterLab UI:** [http://localhost:8888](http://localhost:8888)
+
+#### Paso B: Prueba 1 - Cálculo de $\pi$ Distribuido (SparkPi)
+```bash
+docker exec spark-master /usr/bin/spark-3.5.7-bin-hadoop3/bin/spark-submit \
+  --master spark://spark-master:7077 \
+  --class org.apache.spark.examples.SparkPi \
+  /usr/bin/spark-3.5.7-bin-hadoop3/examples/jars/spark-examples_2.12-3.5.7.jar 10
+```
+
+#### Paso C: Prueba 2 - PySpark DataFrames & Filtrado
+```bash
+docker cp scripts/test_pyspark.py spark-master:/opt/workspace/test_pyspark.py
+docker exec spark-master /usr/bin/spark-3.5.7-bin-hadoop3/bin/spark-submit \
+  --master spark://spark-master:7077 /opt/workspace/test_pyspark.py
+```
+
+#### Paso D: Prueba 3 - Spark SQL & Agregaciones Distribuidas
+```bash
+docker cp scripts/test_spark_sql.py spark-master:/opt/workspace/test_spark_sql.py
+docker exec spark-master /usr/bin/spark-3.5.7-bin-hadoop3/bin/spark-submit \
+  --master spark://spark-master:7077 /opt/workspace/test_spark_sql.py
+```
+
+---
+
+## 8. Comparación con `docker-hadoop` (Big Data Europe)
 
 | Característica | `docker-hadoop` (Referencia) | `spark-standalone-cluster-on-docker` (Seleccionado) |
 | :--- | :--- | :--- |
@@ -246,7 +329,7 @@ Total de registros procesados en el clúster: 5
 | **Número de Contenedores** | 5 (Namenode, Datanode, Resourcemanager, Nodemanager, Historyserver) | 4 (Spark Master, Spark Worker 1, Spark Worker 2, JupyterLab) |
 | **Almacenamiento Distribuido** | HDFS nativo con replicación de bloques en DataNodes | Volumen local montado (`shared-workspace`), integrable con HDFS o S3 externo |
 | **Procesamiento Distribuido** | MapReduce (procesamiento por lotes basado en lecturas/escrituras en disco) | Spark Core / RDDs / DataFrames (procesamiento en memoria, hasta 100x más rápido) |
-| **Interfaces Web** | NameNode Web UI (`9870`), YARN ResourceManager (`8088`), HistoryServer (`8188`) | Spark Master UI (`8080`), Worker UIs (`8081`, `8082`), JupyterLab (`8888`), Spark App UI (`4040`) |
+| **Interfaces Web** | NameNode Web UI (`9870`), YARN ResourceManager (`8088`), HistoryServer (`8188`) | Spark Master UI (`8085`), Worker UIs (`8081`, `8082`), JupyterLab (`8888`), Spark App UI (`4040`) |
 | **Persistencia** | Volúmenes dedicados para metadata del NameNode y datos de DataNodes | Docker Volume compartido para datasets, notebooks y código (`/opt/workspace`) |
 | **Complejidad de Instalación** | Media-Alta (dependencias estrictas de formateo HDFS y sincronización YARN) | Baja-Media (orquestación ágil y escalado dinámico de workers con Compose) |
 | **Documentación** | Enfocada en infraestructura básica de clúster Hadoop | Enfocada en desarrollo de ciencia de datos y analítica interactiva (Scala, Python, R) |
@@ -254,16 +337,18 @@ Total de registros procesados en el clúster: 5
 
 ---
 
-## 8. Conclusiones
+## 9. Conclusiones
 
 1. **Eficiencia y rendimiento:** Apache Spark supera a los modelos tradicionales basados en MapReduce al mantener los datos intermedios en memoria RAM, reduciendo sustancialmente los cuellos de botella de entrada/salida (I/O).
 2. **Modularidad con Docker:** El uso de Docker Compose permite simular un clúster distribuido real en un entorno de desarrollo local con un consumo de recursos controlado (1 GB RAM por worker), facilitando la reproducibilidad sin necesidad de hardware dedicado.
-3. **Integración con JupyterLab:** A diferencia de un clúster Hadoop tradicional enfocado netamente en infraestructura, este stack incluye una capa de presentación y desarrollo interactivo lista para analítica y ciencia de datos.
+3. **Automatización de Pruebas:** La incorporación de un circuito de pruebas automatizado permite validar de forma continua e instantánea la salud del clúster, conectividad de red y la correcta distribución de trabajos en los nodos trabajadores.
 
 ---
 
-## 9. Historial de Commits del Proyecto
+## 10. Historial de Commits del Proyecto
 
 1. `commit 1`: `docs: estructura base del informe y registro del repositorio`
 2. `commit 2`: `feat: configuracion de docker-compose y scripts de prueba funcionales`
 3. `commit 3`: `docs: arquitectura, ejecucion de pruebas distribuidas y tabla comparativa`
+4. `commit 4`: `fix(compose): ajustar puerto Spark Master a 8085 para resolver colisiones locales`
+5. `commit 5`: `feat(tests): circuito de pruebas integral automatizado y manual para validacion del cluster`
