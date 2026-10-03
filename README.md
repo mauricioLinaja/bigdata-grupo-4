@@ -162,7 +162,7 @@ a46ad097818c   andreper/spark-master:3.5.7              "/bin/sh -c 'bin/spa…"
 ## 6. Pruebas Funcionales Realizadas
 
 ### Prueba 1: Monitoreo y Verificación en la Web UI de Spark Master
-* **URL:** `http://localhost:8080`
+* **URL:** `http://localhost:8085`
 * **Verificación:**
   * Estado del clúster: **ALIVE**.
   * URL del master: `spark://spark-master:7077`.
