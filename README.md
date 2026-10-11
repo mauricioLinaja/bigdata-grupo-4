@@ -296,15 +296,17 @@ docker start datanode2
 ## 10. Estructura del Repositorio
 
 ```text
-bigdata-grupo-4-lg15/
-├── docker-compose.yml           # Definición de 1 NameNode y 3 DataNodes (Replication 2)
-├── README.md                    # Informe técnico completo, preguntas y resultados
+bigdata-grupo-4/
+├── docker-compose.yml                     # Definición de 1 NameNode y 3 DataNodes (Replication 2)
+├── README.md                              # Informe técnico completo, preguntas y resultados
+├── Guia_Demostracion_y_Defensa_LG15_Grupo4.pdf  # Guía imprimible en PDF con oratoria y respuestas
 ├── scripts/
-│   ├── setup_hdfs_lg15.py       # Preparación de directorios y carga de datasets
-│   ├── run_failure_tests.py     # Ejecución automatizada de pruebas de caída y recuperación
-│   └── generate_pdf.py          # Generador de informe formal en PDF
-├── evidencias/                  # Logs de salida, trazas de ejecución y capturas
-└── app/                         # Scripts y utilitarios adicionales
+│   ├── setup_hdfs_lg15.py                 # Preparación de directorios y carga de datasets
+│   ├── run_failure_tests.py               # Ejecución automatizada de pruebas de caída y recuperación
+│   └── generate_pdf_lg15.py               # Generador de informe formal en PDF
+└── evidencias/                            # Logs de salida, trazas de ejecución y diagnósticos FSCK
+    ├── evidencia_falla_dataset_1GB.log    # Trazas de falla y recuperación para 1 GB
+    └── evidencia_falla_dataset_10GB.log   # Trazas de falla y recuperación para 10 GB
 ```
 
 ---
