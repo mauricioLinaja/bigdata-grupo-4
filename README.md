@@ -12,7 +12,6 @@
 > **Integrantes:**  
 > - Joel Saavedra  
 > - Mauricio Linaja  
-> - Rommel Gutierrez  
 
 ---
 
