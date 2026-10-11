@@ -1,0 +1,147 @@
+version: '3.8'
+
+# ==============================================================================
+# PROYECTO: CLÚSTER APACHE HADOOP HDFS CON TOLERANCIA A FALLOS Y REPLICACIÓN
+# ASIGNATURA: Tecnologías Emergentes / Big Data (LG15) - Universidad del Valle
+# GRUPO: Grupo 04
+# INTEGRANTES: Joel Saavedra, Mauricio Linaja, Rommel Gutierrez
+# TOPOLOGÍA: 1 NameNode (Maestro) + 3 DataNodes (datanode1, datanode2, datanode3)
+# FACTOR DE REPLICACIÓN MÍNIMO: 2
+# ==============================================================================
+
+volumes:
+  hadoop_namenode:
+    name: hadoop_namenode_g4
+  hadoop_datanode1:
+    name: hadoop_datanode1_g4
+  hadoop_datanode2:
+    name: hadoop_datanode2_g4
+  hadoop_datanode3:
+    name: hadoop_datanode3_g4
+
+networks:
+  hadoop-network:
+    name: hadoop-network-g4
+    driver: bridge
+
+services:
+  # ----------------------------------------------------------------------------
+  # NAMENODE: Nodo Maestro de HDFS
+  # Administra el namespace, la tabla de inodos, la asignación y replicación de bloques.
+  # ----------------------------------------------------------------------------
+  namenode:
+    image: bde2020/hadoop-namenode:2.0.0-hadoop3.2.1-java8
+    container_name: namenode
+    hostname: namenode
+    restart: always
+    ports:
+      - "9870:9870"   # HDFS Web UI (Namenode Overview, Datanodes, Utilities)
+      - "9000:9000"   # Puerto IPC/RPC para clientes HDFS
+    networks:
+      - hadoop-network
+    volumes:
+      - hadoop_namenode:/hadoop/dfs/name
+      - ./app:/app
+      - ./scripts:/scripts
+      - ./evidencias:/evidencias
+    environment:
+      - CLUSTER_NAME=hadoop-cluster-g4
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      - CORE_CONF_hadoop_http_staticuser_user=root
+      - CORE_CONF_hadoop_proxyuser_hue_hosts=*
+      - CORE_CONF_hadoop_proxyuser_hue_groups=*
+      - CORE_CONF_io_compression_codecs=org.apache.hadoop.io.compress.SnappyCodec
+      - HDFS_CONF_dfs_webhdfs_enabled=true
+      - HDFS_CONF_dfs_permissions_enabled=false
+      - HDFS_CONF_dfs_replication=2
+      - HDFS_CONF_dfs_blocksize=134217728
+      - HDFS_CONF_dfs_heartbeat_interval=3
+      - HDFS_CONF_dfs_namenode_heartbeat_recheck___interval=30000
+      - HDFS_CONF_dfs_namenode_datanode_registration_ip___hostname___check=false
+
+  # ----------------------------------------------------------------------------
+  # DATANODE 1: Nodo Esclavo de Almacenamiento 1
+  # ----------------------------------------------------------------------------
+  datanode1:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode1
+    hostname: datanode1
+    restart: always
+    depends_on:
+      - namenode
+    ports:
+      - "9864:9864"   # Web UI / Métricas DataNode 1
+    networks:
+      - hadoop-network
+    volumes:
+      - hadoop_datanode1:/hadoop/dfs/data
+      - ./app:/app
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      - CORE_CONF_hadoop_http_staticuser_user=root
+      - HDFS_CONF_dfs_webhdfs_enabled=true
+      - HDFS_CONF_dfs_permissions_enabled=false
+      - HDFS_CONF_dfs_replication=2
+      - HDFS_CONF_dfs_blocksize=134217728
+      - HDFS_CONF_dfs_heartbeat_interval=3
+      - HDFS_CONF_dfs_namenode_heartbeat_recheck___interval=30000
+      - HDFS_CONF_dfs_namenode_datanode_registration_ip___hostname___check=false
+
+  # ----------------------------------------------------------------------------
+  # DATANODE 2: Nodo Esclavo de Almacenamiento 2 (Objetivo de la simulación de falla)
+  # ----------------------------------------------------------------------------
+  datanode2:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode2
+    hostname: datanode2
+    restart: always
+    depends_on:
+      - namenode
+    ports:
+      - "9865:9864"   # Web UI / Métricas DataNode 2
+    networks:
+      - hadoop-network
+    volumes:
+      - hadoop_datanode2:/hadoop/dfs/data
+      - ./app:/app
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      - CORE_CONF_hadoop_http_staticuser_user=root
+      - HDFS_CONF_dfs_webhdfs_enabled=true
+      - HDFS_CONF_dfs_permissions_enabled=false
+      - HDFS_CONF_dfs_replication=2
+      - HDFS_CONF_dfs_blocksize=134217728
+      - HDFS_CONF_dfs_heartbeat_interval=3
+      - HDFS_CONF_dfs_namenode_heartbeat_recheck___interval=30000
+      - HDFS_CONF_dfs_namenode_datanode_registration_ip___hostname___check=false
+
+  # ----------------------------------------------------------------------------
+  # DATANODE 3: Nodo Esclavo de Almacenamiento 3
+  # ----------------------------------------------------------------------------
+  datanode3:
+    image: bde2020/hadoop-datanode:2.0.0-hadoop3.2.1-java8
+    container_name: datanode3
+    hostname: datanode3
+    restart: always
+    depends_on:
+      - namenode
+    ports:
+      - "9866:9864"   # Web UI / Métricas DataNode 3
+    networks:
+      - hadoop-network
+    volumes:
+      - hadoop_datanode3:/hadoop/dfs/data
+      - ./app:/app
+    environment:
+      - SERVICE_PRECONDITION=namenode:9870
+      - CORE_CONF_fs_defaultFS=hdfs://namenode:9000
+      - CORE_CONF_hadoop_http_staticuser_user=root
+      - HDFS_CONF_dfs_webhdfs_enabled=true
+      - HDFS_CONF_dfs_permissions_enabled=false
+      - HDFS_CONF_dfs_replication=2
+      - HDFS_CONF_dfs_blocksize=134217728
+      - HDFS_CONF_dfs_heartbeat_interval=3
+      - HDFS_CONF_dfs_namenode_heartbeat_recheck___interval=30000
+      - HDFS_CONF_dfs_namenode_datanode_registration_ip___hostname___check=false
