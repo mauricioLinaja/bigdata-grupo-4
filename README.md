@@ -43,16 +43,16 @@ flowchart TD
         DN3["DataNode 3 (Puerto 9866)<br>• Bloques físicos<br>• Nodo receptor de re-replicación"]
     end
 
-    CLI -->|Operaciones HDFS| NN
-    CLI -.->|Lectura y Escritura de Bloques| DN1
-    CLI -.->|Lectura y Escritura de Bloques| DN2
-    CLI -.->|Lectura y Escritura de Bloques| DN3
+    CLI -->|"Operaciones HDFS"| NN
+    CLI -.->|"Lectura y Escritura de Bloques"| DN1
+    CLI -.->|"Lectura y Escritura de Bloques"| DN2
+    CLI -.->|"Lectura y Escritura de Bloques"| DN3
 
-    NN -->|Coordinación y Heartbeats (cada 3s)| DN1
-    NN -->|Heartbeat perdido durante falla| DN2
-    NN -->|Comandos de Re-replicación| DN3
+    NN -->|"Coordinación y Heartbeats cada 3s"| DN1
+    NN -->|"Heartbeat perdido durante falla"| DN2
+    NN -->|"Comandos de Re-replicación"| DN3
 
-    DN1 -.->|Tubería de Replicación de Bloques| DN3
+    DN1 -.->|"Tubería de Replicación de Bloques"| DN3
 ```
 
 ---
